@@ -54,6 +54,12 @@ class Bomb(Widget):
                 if isinstance(tile, Factory.Rock):
                     break
                 if isinstance(tile, Factory.Block):
+                    level.tile_manager.blocks -= 1                                                         # subtract 1 from blocks
+                    level.stats_label.text = "{} Blocks left!".format(level.tile_manager.blocks)           # Set label
+                    if level.tile_manager.blocks < 1:                                                      # if no blocks are left
+                        level.timer.stop()                                                                 #     stop timer
+                        level.stats_label.text = "You destroyed all blocks in {}".format(level.timer.text) #     set label
+                        level.timer.reset()                                                                #     reset timer
                     map = level.map
                     index = map.children.index(tile)
                     map.remove_widget(tile)

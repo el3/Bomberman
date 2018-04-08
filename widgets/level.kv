@@ -3,6 +3,8 @@
     size_hint: None, .8
     width: self.height
     players_area: players_area
+    timer: timer
+    stats_label: stats_label
 
     canvas.before:
         Color:
@@ -12,7 +14,16 @@
             size: self.size
 
     FloatLayout:
-        id: players_area
+        BoxLayout:
+            orientation: "vertical"
+            pos: (root.width+120, root.height)
+            Timer:
+                id: timer
+            Label:
+                font_size: "20sp"
+                id: stats_label
+        FloatLayout:
+            id: players_area
 
 <Spawn@Grass>:
 

@@ -2,6 +2,7 @@ from kivy.event import EventDispatcher
 from kivy.factory import Factory
 from kivy.lang import Builder
 from kivy.properties import (
+    StringProperty,
     DictProperty,
     ListProperty,
     NumericProperty,
@@ -41,10 +42,13 @@ class Level(Widget):
     spawns = ListProperty()
     players = ListProperty()
     bombs = ListProperty()
+    timer = ObjectProperty()         # timer
+    stats_label = ObjectProperty()   # stats label
 
     def __init__(self, **kwargs):
         super(Level, self).__init__(**kwargs)
         self.init_tiles()
+        self.tile_manager = tile_manager # tile_manager
 
     def init_tiles(self):
         for symbol, tile in self.map_tiles.items():
@@ -74,10 +78,11 @@ class Level(Widget):
                     grid.rows - 1 - (index // grid.cols),
                 )
             ))
-
         self.add_widget(grid)
 
     def spawn(self, character):
+        self.timer.start()                                                           # start timer
+        self.stats_label.text = "{} Blocks left!".format(self.tile_manager.blocks)   # set stats label
         if len(self.spawns) <= len(self.players):
             raise ValueError('No spawns remaining in map!')
         spawn = self.map.children[
@@ -133,11 +138,14 @@ class Tile(Widget):
 class TileManager(object):
     def __init__(self):
         self.tiles = {}
+        self.blocks = 0            # blocks counter
 
     def register(self, tile):
         self.tiles[tile.__name__] = tile
 
     def tile(self, tile_name):
+        if tile_name == "Block":      # if block
+            self.blocks += 1          #     increment blocks
         if tile_name not in self.tiles:
             # Try lazy-loading tiles from the Factory
             try:
