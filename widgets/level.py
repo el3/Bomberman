@@ -78,6 +78,7 @@ class Level(Widget):
                     grid.rows - 1 - (index // grid.cols),
                 )
             ))
+            
         self.add_widget(grid)
 
     def spawn(self, character):
